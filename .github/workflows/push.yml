@@ -54,9 +54,21 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     needs: push
-    container:
-      image: ${{ env.IMAGE_NAME }}:${{env.RELEASE}}
     steps:
-    - name: Run dea-conflux
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: Get tag for this build if it exists
+      if: github.event_name == 'release'
       run: |
-        dea-conflux --version
+        echo "RELEASE=${GITHUB_REF/refs\/tags\/}" >> $GITHUB_ENV
+    - name: Get git commit hash for push to main
+      if: github.event_name != 'release'
+      run: |
+        git fetch --all --tags
+        echo "RELEASE=$(git describe --tags)" >> $GITHUB_ENV
+    
+    - name: Run dea-conflux in container
+      run: |
+        docker run -t ${{ env.IMAGE_NAME }}:${{ env.RELEASE }} dea-conflux --version
