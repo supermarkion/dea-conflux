@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: push
     container:
-      image: dea-conflux:${{env.RELEASE}}
+      image: ${{ env.IMAGE_NAME }}:${{env.RELEASE}}
     steps:
     - name: Run dea-conflux
       run: |
