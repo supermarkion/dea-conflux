@@ -279,6 +279,7 @@ def run_one(plugin, uuid, shapefile, output, partial, overedge, verbose):
               help='Include data from over the scene boundary.')
 @click.option('--overwrite/--no-overwrite', default=False,
               help='Rerun scenes that have already been processed.')
+@click.option('-v', '--verbose', count=True)
 @click.option('--queue', '-q',
               help='Queue to read IDs from.')
 @click.option('--timeout', default=15 * 60,
