@@ -279,9 +279,12 @@ def run_one(plugin, uuid, shapefile, output, partial, overedge, verbose):
               help='Include data from over the scene boundary.')
 @click.option('--overwrite/--no-overwrite', default=False,
               help='Rerun scenes that have already been processed.')
-@click.option('-v', '--verbose', count=True)
+@click.option('--queue', '-q',
+              help='Queue to read IDs from.')
+@click.option('--timeout', default=15 * 60,
+              help='The duration (in seconds) that the received SQS messages are hidden.')
 def run_from_queue(plugin, queue, shapefile, output, partial,
-                   overwrite, overedge, verbose):
+                   overwrite, overedge, verbose, timeout):
     """
     Run dea-conflux on a scene from a queue.
     """
@@ -329,6 +332,7 @@ def run_from_queue(plugin, queue, shapefile, output, partial,
         response = queue.receive_messages(
             AttributeNames=['All'],
             MaxNumberOfMessages=1,
+            VisibilityTimeout=timeout,
         )
 
         messages = response
